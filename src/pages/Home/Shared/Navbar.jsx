@@ -20,20 +20,18 @@ const Navbar = () => {
     <>
       <NavLink to="/">HOME</NavLink>
       <NavLink to="/order/salad">ORDER FOOD</NavLink>
-      <NavLink to="/dashboard">DASHBOARD</NavLink>
       <NavLink to="/menu">OUR MENU</NavLink>
       <NavLink to="/cart">
         CART <sup className="badge bg-red-600 text-white ">0</sup>
       </NavLink>
       <NavLink to="/contactUs">CONTACT US</NavLink>
-
-      {user ? (
-        <NavLink onClick={Logout} to="/login">
-          LOGOUT
-        </NavLink>
-      ) : (
-        <NavLink to="/login">LOGIN</NavLink>
-      )}
+      <NavLink to="/login">LOGIN</NavLink>
+      {user &&
+        (<NavLink to="/dashboard">DASHBOARD</NavLink>)(
+          <NavLink onClick={Logout} to="/login">
+            LOGOUT
+          </NavLink>
+        )}
     </>
   );
   return (

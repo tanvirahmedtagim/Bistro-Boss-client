@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import sideLogo from "../../assets/others/authentication2.png";
 import bgImg from "../../assets/others/authentication.png";
 import { FaBackward, FaGoogle } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   loadCaptchaEnginge,
   LoadCanvasTemplate,
@@ -14,9 +14,12 @@ import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isCaptchaValid, setIsCaptchaValid] = useState(false);
   const [captchaError, setCaptchaError] = useState("");
   const { user, handleLogin } = useContext(AuthContext);
+  const from = location.state?.from?.pathname || "/";
+  console.log("state in the location login page", location.state);
 
   useEffect(() => {
     loadCaptchaEnginge(6);
@@ -68,7 +71,7 @@ const Login = () => {
     `,
           },
         });
-        navigate("/");
+        navigate(from, { replace: true });
       });
     } catch (error) {
       toast.error(error.message);

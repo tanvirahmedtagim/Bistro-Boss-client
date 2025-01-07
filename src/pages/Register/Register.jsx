@@ -1,22 +1,23 @@
 import sideLogo from "../../assets/others/authentication2.png";
 import bgImg from "../../assets/others/authentication.png";
-import { data, Link } from "react-router-dom";
+import { data, Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaBackspace, FaBackward, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { useContext, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../providers/AuthProvider";
+import Swal from "sweetalert2";
 
 const Register = () => {
-  const { loading, setLoading } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const { handleRegister } = useContext(AuthContext);
+  const { handleRegister, manageProfile, loading } = useContext(AuthContext);
 
   const {
     register,
     handleSubmit,
-    watch,
+    reset,
     formState: { errors },
   } = useForm();
 
@@ -26,10 +27,7 @@ const Register = () => {
         console.error("No file selected!");
         return;
       }
-      handleRegister(data.email, data.password).then((res) => {
-        const loggedUser = res.user;
-        console.log(loggedUser);
-      });
+
       const formData = new FormData();
       formData.append("file", data.file[0]); // Use the first file
       formData.append("upload_preset", "bistro_boss");
@@ -40,17 +38,41 @@ const Register = () => {
       );
 
       const photo = response.data.url;
-      console.log(photo);
+      const email = data.email;
+      const password = data.password;
+
+      handleRegister(email, password)
+        .then((res) => {
+          const loggedUser = res.user;
+          manageProfile(data.name, photo);
+          reset();
+          Swal.fire({
+            title: "Success!",
+            text: "User registered successfully.",
+            icon: "success",
+            confirmButtonText: "OK",
+            timer: 2000,
+            showConfirmButton: false,
+          });
+          navigate("/");
+        })
+        .catch((error) => {
+          toast.error("User Already Exist");
+          // toast.error(error.message)
+        });
     } catch (error) {
-      console.error("Error uploading file:", error);
+      toast.error("Error uploading file:", error);
     }
   };
 
   return (
     <div
-      className="min-h-screen w-full flex items-center justify-center bg-cover bg-center"
+      className="min-h-screen relative w-full flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: `url(${bgImg})` }}
     >
+      <Link className="absolute top-6 text-2xl font-semibold hover:underline text-[#DBB884] left-10 flex gap-2 items-center" to="/">
+       <FaBackward></FaBackward> Go To Home
+      </Link>
       <div
         className="w-full max-w-4xl bg-white shadow-lg rounded-lg flex overflow-hidden"
         style={{ backgroundImage: `url(${bgImg})` }}
@@ -128,7 +150,7 @@ const Register = () => {
                   minLength: 8,
                   maxLength: 20,
                   pattern:
-                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$!%*?&])[A-Za-z\d@$!%*?&]+$/,
                 })}
                 type={showPassword ? "text" : "password"}
                 placeholder="password"

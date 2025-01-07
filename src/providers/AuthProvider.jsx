@@ -5,6 +5,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  updateProfile,
 } from "firebase/auth";
 
 export const AuthContext = createContext(null);
@@ -31,10 +32,24 @@ const AuthProvider = ({ children }) => {
       unsubscribe();
     };
   }, []);
+
+  const manageProfile = (name, photo) => {
+    updateProfile(auth.currentUser, {
+      displayName: name,
+      photoURL: photo,
+    })
+      .then(() => {
+        setUser({ ...auth.currentUser });
+      })
+      .catch((error) => {
+        console.error("Error updating profile:", error.message);
+      });
+  };
   const authInfo = {
     user,
     handleLogin,
     handleRegister,
+    manageProfile,
     handleLogout,
     loading,
     setLoading,

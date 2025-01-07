@@ -1,12 +1,17 @@
 import React, { useContext } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../providers/AuthProvider";
 
 const Navbar = () => {
-  const { user } = useContext(AuthContext);
-  const Logout = () => {
-    handleLogout()
-      .then((res) => {})
+  const { user, handleLogout, setLoading } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const Logout = async () => {
+    setLoading(true);
+    await handleLogout()
+      .then((res) => {
+        navigate("/");
+        setLoading(false);
+      })
       .catch((err) => {
         console.log(err);
       });
@@ -17,7 +22,9 @@ const Navbar = () => {
       <NavLink to="/order/salad">ORDER FOOD</NavLink>
       <NavLink to="/dashboard">DASHBOARD</NavLink>
       <NavLink to="/menu">OUR MENU</NavLink>
-      <NavLink to="/cart">CART</NavLink>
+      <NavLink to="/cart">
+        CART <sup className="badge bg-red-600 text-white ">0</sup>
+      </NavLink>
       <NavLink to="/contactUs">CONTACT US</NavLink>
 
       {user ? (
@@ -67,7 +74,30 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end">
-        <a className="btn">Button</a>
+        {user && (
+          <div className="flex gap-3 items-center">
+            <div className="dropdown">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-ghost btn-circle"
+              >
+                <div
+                  className="w-10 h-10 rounded-full tooltip tooltip-bottom"
+                  data-tooltip-id="my-tooltip"
+                  data-tooltip-content={user?.displayName}
+                  data-tooltip-place="top"
+                >
+                  <img
+                    className="w-full h-full rounded-full"
+                    src={user?.photoURL}
+                    alt="User"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

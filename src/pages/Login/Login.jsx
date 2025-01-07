@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import sideLogo from "../../assets/others/authentication2.png";
 import bgImg from "../../assets/others/authentication.png";
-import { FaGoogle } from "react-icons/fa";
+import { FaBackward, FaGoogle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import {
   loadCaptchaEnginge,
@@ -10,6 +10,7 @@ import {
 } from "react-simple-captcha";
 import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
     const email = form.email.value;
@@ -44,28 +45,34 @@ const Login = () => {
     }
 
     console.log(email, password);
-    handleLogin(email, password).then((res) => {
-      const user = res.user;
-      // console.log(user);
-      Swal.fire({
-        title: "User Login Successfully!",
-        showClass: {
-          popup: `
+    try {
+      await handleLogin(email, password).then((res) => {
+        const user = res.user;
+        e.target.reset();
+
+        // console.log(user);
+        Swal.fire({
+          title: "User Login Successfully!",
+          showClass: {
+            popup: `
       animate__animated
       animate__fadeInUp
       animate__faster
     `,
-        },
-        hideClass: {
-          popup: `
+          },
+          hideClass: {
+            popup: `
       animate__animated
       animate__fadeOutDown
       animate__faster
     `,
-        },
+          },
+        });
+        navigate("/");
       });
-      navigate("/");
-    });
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -73,6 +80,12 @@ const Login = () => {
       className="min-h-screen w-full flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: `url(${bgImg})` }}
     >
+      <Link
+        className="absolute top-6 text-2xl font-semibold hover:underline text-[#DBB884] left-20 flex gap-2 items-center"
+        to="/"
+      >
+        <FaBackward></FaBackward> Go To Home
+      </Link>
       <div
         className="w-full max-w-4xl bg-white shadow-lg rounded-lg flex overflow-hidden"
         style={{ backgroundImage: `url(${bgImg})` }}

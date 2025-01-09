@@ -19,7 +19,6 @@ const Login = () => {
   const [captchaError, setCaptchaError] = useState("");
   const { user, handleLogin } = useContext(AuthContext);
   const from = location.state?.from?.pathname || "/";
-  console.log("state in the location login page", location.state);
 
   useEffect(() => {
     loadCaptchaEnginge(6);
@@ -47,7 +46,6 @@ const Login = () => {
       return;
     }
 
-    console.log(email, password);
     try {
       await handleLogin(email, password).then((res) => {
         const user = res.user;

@@ -25,13 +25,16 @@ const Navbar = () => {
         CART <sup className="badge bg-red-600 text-white ">0</sup>
       </NavLink>
       <NavLink to="/contactUs">CONTACT US</NavLink>
-      <NavLink to="/login">LOGIN</NavLink>
-      {user &&
-        (<NavLink to="/dashboard">DASHBOARD</NavLink>)(
+      {user ? (
+        <>
+          <NavLink to="/dashboard">DASHBOARD</NavLink>
           <NavLink onClick={Logout} to="/login">
             LOGOUT
           </NavLink>
-        )}
+        </>
+      ) : (
+        <NavLink to="/login">LOGIN</NavLink>
+      )}
     </>
   );
   return (

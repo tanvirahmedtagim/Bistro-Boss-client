@@ -1,9 +1,11 @@
 import React, { useContext } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../providers/AuthProvider";
+import useCart from "../../../hooks/useCart";
 
 const Navbar = () => {
   const { user, handleLogout, setLoading } = useContext(AuthContext);
+  const [cart] = useCart();
   const navigate = useNavigate();
   const Logout = async () => {
     setLoading(true);
@@ -22,7 +24,7 @@ const Navbar = () => {
       <NavLink to="/order/salad">ORDER FOOD</NavLink>
       <NavLink to="/menu">OUR MENU</NavLink>
       <NavLink to="/cart">
-        CART <sup className="badge bg-red-600 text-white ">0</sup>
+        CART <sup className="badge bg-red-600 text-white ">+{cart.length}</sup>
       </NavLink>
       <NavLink to="/contactUs">CONTACT US</NavLink>
       {user ? (

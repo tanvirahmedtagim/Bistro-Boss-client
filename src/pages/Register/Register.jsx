@@ -33,7 +33,9 @@ const Register = () => {
       formData.append("upload_preset", "bistro_boss");
 
       const response = await axios.post(
-        `https://api.cloudinary.com/v1_1/diqlcwhwe/image/upload`,
+        `https://api.cloudinary.com/v1_1/${
+          import.meta.env.PRIVATE_KEY
+        }/image/upload`,
         formData
       );
 
@@ -70,8 +72,11 @@ const Register = () => {
       className="min-h-screen relative w-full flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: `url(${bgImg})` }}
     >
-      <Link className="absolute top-6 text-2xl font-semibold hover:underline text-[#DBB884] left-10 flex gap-2 items-center" to="/">
-       <FaBackward></FaBackward> Go To Home
+      <Link
+        className="absolute top-6 text-2xl font-semibold hover:underline text-[#DBB884] left-10 flex gap-2 items-center"
+        to="/"
+      >
+        <FaBackward></FaBackward> Go To Home
       </Link>
       <div
         className="w-full max-w-4xl bg-white shadow-lg rounded-lg flex overflow-hidden"
